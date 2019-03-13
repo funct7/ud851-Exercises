@@ -61,6 +61,7 @@ public class VisualizerActivity extends AppCompatActivity implements SharedPrefe
                 getResources().getBoolean(R.bool.pref_show_treble_default)));
         mVisualizerView.setMinSizeScale(1);
         loadColorFromPreferences(sharedPreferences);
+        setSizeFromPrefs(sharedPreferences);
         // Register the listener
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
     }
@@ -82,7 +83,17 @@ public class VisualizerActivity extends AppCompatActivity implements SharedPrefe
             mVisualizerView.setShowTreble(sharedPreferences.getBoolean(key, getResources().getBoolean(R.bool.pref_show_treble_default)));
         } else if (key.equals(getString(R.string.pref_color_key))) {
             loadColorFromPreferences(sharedPreferences);
+        } else if (key.equals(getString(R.string.pref_size_key))) {
+            setSizeFromPrefs(sharedPreferences);
         }
+    }
+
+    private void setSizeFromPrefs(SharedPreferences prefs) {
+        String value = prefs.getString(
+                getString(R.string.pref_size_key),
+                getString(R.string.pref_size_default));
+
+        mVisualizerView.setMinSizeScale(Float.valueOf(value));
     }
 
     @Override
@@ -140,7 +151,7 @@ public class VisualizerActivity extends AppCompatActivity implements SharedPrefe
             mAudioInputReader.restart();
         }
     }
-    
+
     /**
      * App Permissions for Audio
      **/
@@ -150,7 +161,7 @@ public class VisualizerActivity extends AppCompatActivity implements SharedPrefe
             // And if we're on SDK M or later...
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 // Ask again, nicely, for the permissions.
-                String[] permissionsWeNeed = new String[]{ Manifest.permission.RECORD_AUDIO };
+                String[] permissionsWeNeed = new String[]{Manifest.permission.RECORD_AUDIO};
                 requestPermissions(permissionsWeNeed, MY_PERMISSION_RECORD_AUDIO_REQUEST_CODE);
             }
         } else {
