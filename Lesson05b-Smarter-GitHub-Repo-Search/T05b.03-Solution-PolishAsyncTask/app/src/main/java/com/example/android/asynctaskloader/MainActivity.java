@@ -21,6 +21,7 @@ import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -171,6 +172,7 @@ public class MainActivity extends AppCompatActivity implements
 
             @Override
             protected void onStartLoading() {
+                Log.d("Async_onStart", "ON START CALLED");
 
                 /* If no arguments were passed, we don't have a query to perform. Simply return. */
                 if (args == null) {
@@ -221,6 +223,8 @@ public class MainActivity extends AppCompatActivity implements
             // COMPLETED (4) Call super.deliverResult after storing the data
             @Override
             public void deliverResult(String githubJson) {
+                Log.d("Async_deliverRes", "DELIVER RESULT CALLED");
+
                 mGithubJson = githubJson;
                 super.deliverResult(githubJson);
             }
