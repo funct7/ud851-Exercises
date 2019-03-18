@@ -1,23 +1,24 @@
 /*
-* Copyright (C) 2016 The Android Open Source Project
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-*      http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
+ * Copyright (C) 2016 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package com.example.android.todolist;
 
-import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProvider;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -78,17 +79,20 @@ public class AddTaskActivity extends AppCompatActivity {
                 mTaskId = intent.getIntExtra(EXTRA_TASK_ID, DEFAULT_TASK_ID);
 
                 // TODO (9) Remove the logging and the call to loadTaskById, this is done in the ViewModel now
-                Log.d(TAG, "Actively retrieving a specific task from the DataBase");
-                final LiveData<TaskEntry> task = mDb.taskDao().loadTaskById(mTaskId);
                 // TODO (10) Declare a AddTaskViewModelFactory using mDb and mTaskId
                 // TODO (11) Declare a AddTaskViewModel variable and initialize it by calling ViewModelProviders.of
                 // for that use the factory created above AddTaskViewModel
                 // TODO (12) Observe the LiveData object in the ViewModel. Use it also when removing the observer
-                task.observe(this, new Observer<TaskEntry>() {
+
+                final AddTaskViewModel viewModel = ViewModelProviders
+                        .of(this, new AddTaskViewModelFactory(mDb, mTaskId))
+                        .get(AddTaskViewModel.class);
+
+                viewModel.getTask().observe(this, new Observer<TaskEntry>() {
                     @Override
                     public void onChanged(@Nullable TaskEntry taskEntry) {
-                        task.removeObserver(this);
                         Log.d(TAG, "Receiving database update from LiveData");
+                        viewModel.getTask().removeObserver(this);
                         populateUI(taskEntry);
                     }
                 });

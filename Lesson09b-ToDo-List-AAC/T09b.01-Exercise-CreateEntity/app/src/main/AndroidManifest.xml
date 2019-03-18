@@ -12,6 +12,7 @@
         tools:ignore="GoogleAppIndexingWarning">
 
         <!-- The manifest entry for the MainActivity -->
+
         <activity android:name="com.example.android.todolist.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
